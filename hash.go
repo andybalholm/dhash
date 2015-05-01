@@ -3,6 +3,7 @@ package dhash
 import (
 	"fmt"
 	"image"
+	"strings"
 
 	"github.com/andybalholm/go-bit"
 )
@@ -12,6 +13,17 @@ type Hash [2]uint64
 
 func (h Hash) String() string {
 	return fmt.Sprintf("%016x%016x", h[0], h[1])
+}
+
+// Parse takes the string representation of a Hash, and returns the
+// corresponding Hash value.
+func Parse(s string) (h Hash, err error) {
+	if len(s) != 32 {
+		err = fmt.Errorf("wrong length for dhash value (%d characters; should be 32)", len(s))
+		return
+	}
+	_, err = fmt.Fscanf(strings.NewReader(s), "%016x%016x", &h[0], &h[1])
+	return
 }
 
 // New returns a hash of img. The algorithm is the difference hash from
